@@ -1,0 +1,70 @@
+[package]
+title = "My Simple Application"
+
+version = "1.0.0"
+
+description = """This Simple application shows you how to make an application that doesn't use USD
+or RTX but simply Omniverse Kit and its UI framework to build a window and some functions.
+It is compatible with anywhere kit can run its UI (i.e. most computers with any GPU)
+"""
+# Keywords make  it browseable in UI using the "experience" filter
+keywords = ["app"]
+
+[dependencies]
+# Create Kit UI Based applications
+"omni.kit.uiapp" = {}
+
+# This is your application setup Extension
+# where you layout the various Windows, arrange your menu, etc.
+# order = 1000 makes it run last
+"my_name.my_app.setup" = { order = 1000 }
+
+# This is a window for your application just as an example.
+# You can have many of them or none depending on what you are doing.
+"my_name.my_app.window" = {}
+
+[settings]
+# when you don't need RTX you can use the compatibility mode, faster load and work on "any" GPU
+exts."omni.kit.renderer.core".compatibilityMode = true
+
+# deprecate support for old kit.ui.menu
+# (support legacy_mode will probably be removed for Kit 104)
+app.menu.legacy_mode = false
+
+# this is used in our setup file to display the Version to the user in the title bar
+app.titleVersion = "1.0"
+
+# Skip long full shutdown and exit quickly
+app.fastShutdown = true
+
+[settings.app.window]
+title = "My First App"
+
+# Width and Height of your Main Window at startup
+width = 1000
+height = 500
+
+# this is a custom setting used in our app setup to choose the Layout
+[settings.app.layout]
+name = "basic"
+
+# Register extension folders from this repo in kit
+# These are the paths where Kit looks for extensions
+# Your application is using Extensions from your application
+# Here they are setup into a single folder "exts" but you can have you own structure if you need
+# see we also add the Extension from the Base application using their extscache
+[settings.app.exts]
+folders.'++' = ["${app}/../exts", "${app}/../extscache/", "${app}/../baseapp/exts", "${app}/../baseapp/extscache", "${app}/../baseapp/apps"]
+
+# Extension registry is not yet enabled for public apps
+[settings.app.extensions]
+registryEnabled = false
+
+# these will be for showing how to write tests for your application.
+# And yes you absolutely should
+[[test]]
+args = [
+	"--/app/window/width=480",
+    "--/app/window/height=480",
+    "--/app/extensions/registryEnabled=0", # Make sure we can run without registry and everything is precached
+]
